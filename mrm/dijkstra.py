@@ -17,7 +17,7 @@ def dijkstra(neighbors_dict, weights_dict = defaultdict(lambda: 1), start_point 
     curr_point = start_point
 
     weights = {curr_point: 0}
-    explore = defaultdict(set)
+    explore = defaultdict(dict)
     if keep_paths:
         paths = {curr_point: [curr_point]}
 
@@ -46,14 +46,15 @@ def dijkstra(neighbors_dict, weights_dict = defaultdict(lambda: 1), start_point 
                     if keep_paths:
                         paths[n] = curr_path + [n]
                 if n not in visited:
-                    explore[curr_weight + dist_est(n)].add(n)
+                    explore[curr_weight + dist_est(n)][n] = True
 
         buckets = sorted(explore.keys())
         while curr_point in visited or danger_ignore_visited:
             found_point = False
             for b in buckets:
                 if len(explore[b]) != 0:
-                    curr_point = explore[b].pop()
+                    curr_point = next(iter(explore[b].keys()))
+                    del explore[b][curr_point]
                     found_point = True
                     break
                 del explore[b]

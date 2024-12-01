@@ -1,0 +1,3 @@
+[submodule "data"]
+	path = data
+	url = https://mmdoogie@github.com/mmdoogie/adventofcode2024_input

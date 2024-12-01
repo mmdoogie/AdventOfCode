@@ -92,8 +92,9 @@ def main():
     if args.y >= 15 and args.y <= 24:
         args.y += 2000
 
-    if args.y != 2024:
-        print('Year must be 2024')
+    included_years = [2015, 2024]
+    if args.y not in included_years:
+        print('Year must be in', included_years)
         sys.exit(1)
 
     if args.d < 0 or args.d > 25:

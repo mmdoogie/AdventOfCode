@@ -2,21 +2,20 @@ import re
 
 def parse():
     with open('data/aoc_2024/03.txt', 'r', encoding='utf8') as f:
-        lines = [l.strip('\n') for l in f.readlines()]
-    return ''.join(lines)
+        return f.read()
 
 def do_mul(g1, g2):
     return int(g1) * int(g2)
 
 def part1(output=False):
     lines = parse()
-    mul_re = re.compile(r'mul\(([0-9]+),([0-9]+)\)')
+    mul_re = re.compile(r'mul\(([0-9]{1,3}),([0-9]{1,3})\)')
 
     return sum(do_mul(*m.group(1, 2)) for m in mul_re.finditer(lines))
 
 def part2(output=False):
     lines = parse()
-    mul_re = re.compile(r"mul\(([0-9]+),([0-9]+)\)|do\(\)|don't\(\)")
+    mul_re = re.compile(r"mul\(([0-9]{1,3}),([0-9]{1,3})\)|do\(\)|don't\(\)")
 
     enabled = True
     total = 0

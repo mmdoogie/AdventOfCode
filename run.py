@@ -92,7 +92,7 @@ def main():
     if args.y >= 15 and args.y <= 24:
         args.y += 2000
 
-    included_years = [2015, 2016, 2017, 2018, 2019, 2022, 2023, 2024]
+    included_years = [2015, 2016, 2017, 2018, 2019, 2020, 2022, 2023, 2024]
     if args.y not in included_years:
         print('Year must be in', included_years)
         sys.exit(1)

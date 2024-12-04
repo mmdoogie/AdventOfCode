@@ -2,7 +2,9 @@
 
 __all__ = ['ESC', 'CURSOR_HOME', 'CLEAR_SCREEN', 'CLEAR_LINE', 'COLOR_RED', 'COLOR_GREEN', 'COLOR_YELLOW', 'COLOR_BLUE', 'COLOR_MAGENTA', 'COLOR_CYAN', 'TEXT_BOLD', 'TEXT_ITALIC', 'TEXT_UNDERLINE', 'TEXT_RESET', 'SAVE_CURSOR', 'RESTORE_CURSOR', 'HIDE_CURSOR', 'SHOW_CURSOR', 'clear_line', 'cursor_home', 'clear_screen', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'bold', 'italic', 'underline', 'save_cursor', 'restore_cursor', 'text_attr', 'hidden_cursor', 'restored_cursor']
 
+from collections import deque
 from contextlib import contextmanager
+import re
 
 ESC = chr(27)
 
@@ -125,3 +127,54 @@ def hidden_cursor():
         yield None
     finally:
         print(SHOW_CURSOR, end = '')
+
+def as_pango_markup(text):
+    """converts a string formatted using basic terminal escape sequences (color & formatting only) to Pango Markup"""
+    color = {COLOR_RED: 'red',
+             COLOR_GREEN: 'green',
+             COLOR_BLUE: 'blue',
+             COLOR_CYAN: 'cyan',
+             COLOR_MAGENTA: 'magenta',
+             COLOR_YELLOW: 'yellow'}
+    fmt   = {TEXT_BOLD: 'b',
+             TEXT_ITALIC: 'i',
+             TEXT_UNDERLINE: 'u'}
+
+    esc_re = re.compile(ESC + r'\[[0-9?]*[a-zA-Z]')
+    escs = esc_re.finditer(text)
+    for e in escs:
+        if not (e in color or e in fmt or e != TEXT_RESET):
+            print('Only able to convert sequences with color and formatting escapes')
+            return ''
+
+    escs = esc_re.finditer(text)
+    d = deque()
+    result = ''
+
+    curr_esc = next(escs)
+    curr_i = curr_esc.start()
+    result += text[:curr_i]
+    while curr_i < len(text):
+        code = curr_esc.group(0)
+        if code in color:
+            d.append('</span>')
+            result += f'<span foreground="{color[code]}">'
+        if code in fmt:
+            d.append(f'</{fmt[code]}>')
+            result += f'<{fmt[code]}>'
+        if code == TEXT_RESET:
+            while d:
+                close = d.pop()
+                result += close
+        curr_i = curr_esc.end()
+        try:
+            curr_esc = next(escs)
+            result += text[curr_i:curr_esc.start()]
+        except StopIteration:
+            result += text[curr_i:]
+            while d:
+                close = d.pop()
+                result += close
+            break
+
+    return result

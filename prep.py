@@ -24,6 +24,8 @@ def prep_data(fn, year, day):
     with open(fn, 'w', encoding='utf8') as out_file:
         out_file.write(data)
 
+    print(data)
+
 def update_results(year, day, force):
     puz = aocd.get_puzzle(day=day, year=year)
     result_module_name = f'data.aoc_{year}.results'

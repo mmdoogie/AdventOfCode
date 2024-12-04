@@ -15,7 +15,7 @@ COLOR_FAIL_STR = ansi.red('FAIL')
 
 def do_submit(year, day, part, value):
     load_dotenv()
-    aocd.post.submit(year=year, day=day, part=part, answer=value)
+    aocd.post.submit(year=year, day=day, part=part, answer=value, reopen=False)
 
 def run_daypart(year, day_num, part_num, output, submit):
     day_str = f'{day_num:02d}'
@@ -66,7 +66,9 @@ def run_daypart(year, day_num, part_num, output, submit):
             elif results is not None and part_num in results:
                 print(ansi.yellow('Correct answer already populated in results; skipping submit request.'))
             else:
-                do_submit(year, day_num, part_num, daypart_val)
+                user_resp = input('Submit? [y/N] ')
+                if user_resp == 'y':
+                    do_submit(year, day_num, part_num, daypart_val)
     except Exception as ex:
         print(f'Day {day_str}, Part {part_num}: Not found or error running: {ex}')
         print(traceback.format_exc())

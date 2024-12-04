@@ -41,11 +41,11 @@ def dist(pt1, pt2):
         raise ValueError('Point lengths must match to compute distance')
     return sum((a - b) ** 2 for a, b in zip(pt1, pt2)) ** 0.5
 
-def point_add(pt1, pt2):
-    """Return new point which is the sum pt1 + pt2 of all dimension components"""
+def point_add(pt1, pt2, scale=1):
+    """Return new point which is the sum pt1 + scale * pt2 of all dimension components"""
     if len(pt1) != len(pt2):
         raise ValueError('Point lengths must match to compute sum')
-    return tuple(a + b for a, b in zip(pt1, pt2))
+    return tuple(a + scale * b for a, b in zip(pt1, pt2))
 
 def point_sub(pt1, pt2):
     """Return new point which is the difference pt1 - pt2 of all dimension components"""

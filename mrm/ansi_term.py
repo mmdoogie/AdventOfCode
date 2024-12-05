@@ -130,12 +130,12 @@ def hidden_cursor():
 
 def as_pango_markup(text):
     """converts a string formatted using basic terminal escape sequences (color & formatting only) to Pango Markup"""
-    color = {COLOR_RED: 'red',
-             COLOR_GREEN: 'green',
-             COLOR_BLUE: 'blue',
-             COLOR_CYAN: 'cyan',
-             COLOR_MAGENTA: 'magenta',
-             COLOR_YELLOW: 'yellow'}
+    color = {COLOR_RED: '#e06c75',
+             COLOR_GREEN: '#98c379',
+             COLOR_BLUE: '#61afef',
+             COLOR_CYAN: '#56b6c2',
+             COLOR_MAGENTA: '#c678dd',
+             COLOR_YELLOW: '#d19a66'}
     fmt   = {TEXT_BOLD: 'b',
              TEXT_ITALIC: 'i',
              TEXT_UNDERLINE: 'u'}

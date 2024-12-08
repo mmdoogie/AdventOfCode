@@ -57,7 +57,7 @@ def point_neg(pt):
     """Return new point which is the negation of all dimension components"""
     return tuple(-p for p in pt)
 
-def grid_as_dict(grid, valid = lambda x: True, with_inv = True):
+def grid_as_dict(grid, valid = lambda x: True, with_inv = False):
     """Convert a grid of text into a dictionary of 2D points mapping to corresponding characters.
     Points are only included subject to the valid function (defaults to accepting all points).
     With with_inv = True, also return the inverse that maps unique characters to location lists.

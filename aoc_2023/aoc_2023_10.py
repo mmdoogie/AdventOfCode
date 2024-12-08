@@ -124,7 +124,7 @@ def part2(output = True):
                      'S': 'x',      '@': 'o'}
         pretty_tiles = {p: char_swap[path_tiles[p]] for p in path_tiles}
         pretty_tiles[start] = ansi.yellow('x')
-        print_image(pretty_tiles, True, '\u00b7', 'o', ansi.magenta)
+        print_image(pretty_tiles, True, '\u00b7', lambda x, y, c: ansi.magenta(c) if c == 'o' else c)
 
     return enclosed_cnt
 

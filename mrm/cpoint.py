@@ -57,13 +57,17 @@ def dist(pt1, pt2 = ZERO):
     """Return vector distance between two points, or origin if pt2 not specified"""
     return abs(pt2 - pt1)
 
-def grid_as_dict(grid, valid = lambda x: True):
+def grid_as_dict(grid, valid = lambda x: True, with_inv = False):
     """Convert a grid of text into a dictionary of complex points mapping to corresponding characters.
     Points are only included subject to the valid function (defaults to accepting all points).
+    With with_inv = True, also return the inverse that maps unique characters to location lists.
     """
     res = {}
     for y, g in enumerate(grid):
         for x, c in enumerate(g):
             if valid(c):
                 res[from_xy(x, y)] = c
-    return res
+    if not with_inv:
+        return res
+    inv = {c: {k for k, v in res.items() if v == c} for c in set(res.values())}
+    return res, inv

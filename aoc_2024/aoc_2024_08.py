@@ -6,16 +6,17 @@ import mrm.cpoint as cpt
 def parse():
     with open('data/aoc_2024/08.txt', 'r', encoding='utf8') as f:
         lines = [l.strip('\n') for l in f.readlines()]
-    grid = cpt.grid_as_dict(lines)
-    return grid
+    return cpt.grid_as_dict(lines, with_inv = True)
+
+VALID_FREQ = string.ascii_letters + string.digits
 
 def part1(output=False):
-    grid = parse()
+    grid, inv = parse()
 
     antinodes = set()
-    frequencies = set(v for v in grid.values() if v in string.ascii_letters + string.digits)
-    for freq in frequencies:
-        locs = [k for k, v in grid.items() if v == freq]
+    for freq, locs in inv.items():
+        if freq not in VALID_FREQ:
+            continue
         for loc_a, loc_b in combinations(locs, 2):
             diff = loc_b - loc_a
             node = loc_a - diff
@@ -28,20 +29,19 @@ def part1(output=False):
     return len(antinodes)
 
 def part2(output=False):
-    grid = parse()
+    grid, inv = parse()
 
     antinodes = set()
-    frequencies = set(v for v in grid.values() if v in string.ascii_letters + string.digits)
-    for freq in frequencies:
-        locs = [k for k, v in grid.items() if v == freq]
-        antinodes.update(locs)
+    for freq, locs in inv.items():
+        if freq not in VALID_FREQ:
+            continue
         for loc_a, loc_b in combinations(locs, 2):
             diff = loc_b - loc_a
-            node = loc_a - diff
+            node = loc_a
             while node in grid:
                 antinodes.add(node)
                 node -= diff
-            node = loc_b + diff
+            node = loc_b
             while node in grid:
                 antinodes.add(node)
                 node += diff

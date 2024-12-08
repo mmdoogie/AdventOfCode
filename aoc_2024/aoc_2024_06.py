@@ -5,7 +5,7 @@ import mrm.image as img
 def parse():
     with open('data/aoc_2024/06.txt', 'r', encoding='utf8') as f:
         lines = [l.strip('\n') for l in f.readlines()]
-    return lines
+    return cpt.grid_as_dict(lines, with_inv=True)
 
 def get_visited(grid, start):
     loc = start
@@ -24,12 +24,10 @@ def get_visited(grid, start):
         visited[(loc, heading)] = True
 
 def part1(output=False):
-    lines = parse()
-    grid = cpt.grid_as_dict(lines)
-    start = [k for k, v in grid.items() if v == '^'][0]
+    grid, inv = parse()
+    start = inv['^'].pop()
     visited = set(k[0] for k in get_visited(grid, start))
     if output:
-        grid = {cpt.as_xy(k, int): v for k, v in grid.items()}
         img.print_image(grid, use_char=True, highlighter=lambda x, y, c: ansi.red('*') if cpt.from_xy(x, y) in visited else c)
     return len(visited)
 
@@ -52,9 +50,8 @@ def check_loop(grid, start, pre_visited, addin):
         visited.add((loc, heading))
 
 def part2(output=False):
-    lines = parse()
-    grid = cpt.grid_as_dict(lines)
-    start = [k for k, v in grid.items() if v == '^'][0]
+    grid, inv = parse()
+    start = inv['^'].pop()
     visited = list(get_visited(grid, start).keys())
     visited_points = [k[0] for k in visited]
 

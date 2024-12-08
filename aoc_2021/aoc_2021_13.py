@@ -34,5 +34,5 @@ def part2(output=False):
     for f in folds:
         fold(points, f[0], int(f[1]))
 
-    img = make_image(list(map(tuple, points)), output)
+    img = make_image(points, output)
     return ocr_image(img)

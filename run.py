@@ -46,7 +46,7 @@ def run_daypart(year, day_num, part_num, output, submit):
         t_after = time.process_time()
         exec_time = round(t_after - t_before, 3)
 
-        print(f'[{exec_time:>7.3f}] Day {day_str}, Part {part_num}: ', end='')
+        print(f'[{exec_time:>7.3f}] {year} Day {day_str}, Part {part_num}: ', end='')
         if results is not None and part_num in results:
             if 'no_match' not in results or part_num not in results['no_match']:
                 daypart_expect = str(results[part_num])
@@ -70,7 +70,7 @@ def run_daypart(year, day_num, part_num, output, submit):
                 if user_resp == 'y':
                     do_submit(year, day_num, part_num, daypart_val)
     except Exception as ex:
-        print(f'Day {day_str}, Part {part_num}: Not found or error running: {ex}')
+        print(f'{year} Day {day_str}, Part {part_num}: Not found or error running: {ex}')
         print(traceback.format_exc())
         sys.exit(1)
 

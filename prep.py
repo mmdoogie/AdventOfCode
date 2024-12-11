@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import argparse
-from datetime import date, datetime
+from datetime import datetime
 from os import path
 import re
 import sys
@@ -19,7 +19,9 @@ def prep_template(fn, year, day):
         out_file.write(in_data)
 
 def prep_data(fn, year, day):
-    data = aocd.get_data(day=day, year=year)
+    now = datetime.utcnow()
+    block = now.year == year and now.day == day and now.hour == 4
+    data = aocd.get_data(day=day, year=year, block=block)
 
     with open(fn, 'w', encoding='utf8') as out_file:
         out_file.write(data)
@@ -61,11 +63,13 @@ def main():
     ap.add_argument('-f', action = 'store_true', help = 'Force overwrite. Only valid with a specified part.')
     args = ap.parse_args()
 
+    now = datetime.utcnow()
+
     if not args.y:
-        args.y = date.today().year
+        args.y = now.year
 
     if not args.d:
-        args.d = datetime.utcnow().day
+        args.d = now.day
 
     if args.y >= 15 and args.y <= 24:
         args.y += 2000

@@ -1,6 +1,6 @@
 from collections import Counter, defaultdict, deque, namedtuple
 from functools import cache, cmp_to_key, partial, reduce
-from itertools import combinations, cycle, groupby, permutations, product
+from itertools import combinations, cycle, groupby, pairwise, permutations, product
 import math
 import operator
 import random
@@ -12,7 +12,7 @@ from mrm.cache import Keycache
 import mrm.cpoint as cpt
 from mrm.crt import all_coprime, coprime, crt
 from mrm.dijkstra import Dictlike, dijkstra
-from mrm.graph import prim_mst
+from mrm.graph import bfs, connected_component, prim_mst
 import mrm.image as img
 from mrm.iter import batched, sliding_window
 import mrm.llist as llist

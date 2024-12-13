@@ -21,7 +21,7 @@ import mrm.point as pt
 from mrm.search import fn_binary_search
 from mrm.text import let2num, num2let
 from mrm.tsp import held_karp, held_karp_dist
-from mrm.util import big_pi, md5sum
+from mrm.util import big_pi, Funkydict, md5sum
 
 def parse():
     with open('data/aoc_{YEAR}/{DAY}.txt', 'r', encoding='utf8') as f:

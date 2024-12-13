@@ -4,7 +4,7 @@ __all__ = ['dijkstra', 'Dictlike']
 
 from collections import defaultdict
 
-def dijkstra(neighbors_dict, weights_dict = defaultdict(lambda: 1), start_point = None,
+def dijkstra(neighbors_dict, weights_dict = None, start_point = None,
              end_point = None, keep_paths = True, dist_est = lambda x: 0, danger_ignore_visited = False):
     """Performs a Dijkstra's Algorithm pathfinding using the neighbors and weights provided.
     Starts from start_point and ends either when all paths are exhausted (end_point=None),
@@ -13,6 +13,8 @@ def dijkstra(neighbors_dict, weights_dict = defaultdict(lambda: 1), start_point 
     If keep_paths is False, only the final weights are returned.
     Providing an admissible distance estimator for dist_est converts this to A*.
     """
+    if weights_dict is None:
+        weights_dict = defaultdict(lambda: 1)
     visited = set()
     curr_point = start_point
 

@@ -1,7 +1,8 @@
 """Module for small helper functions without a home"""
 
-__all__ = ['big_pi', 'md5sum', 'product']
+__all__ = ['big_pi', 'Funkydict', 'md5sum', 'product']
 
+from collections import UserDict
 from functools import reduce
 from hashlib import md5
 from operator import mul
@@ -15,3 +16,24 @@ def product(x):
     return reduce(mul, x)
 
 big_pi = product
+
+class Funkydict(UserDict):
+    """Dict-like object that immediately applies a reducing function when items are set
+
+    initial_data: data to load prior to operation
+    set_fun: function taking current and new value and returning reduced/accumulated value to store
+    defaultfactory: function to create the base value for new keys
+    """
+
+    def __init__(self, initialdata = None, set_fun = lambda curr, new: new, default_factory = int):
+        if initialdata:
+            super().__init__(initialdata)
+        self.set_fun = set_fun
+        self.default_factory = default_factory
+
+    def __setitem__(self, key, val):
+        if key in self:
+            curr = self[key]
+        else:
+            curr = self.default_factory()
+        self.data[key] = self.set_fun(curr, val)

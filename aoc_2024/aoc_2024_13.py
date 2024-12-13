@@ -1,21 +1,15 @@
-from itertools import groupby
-import re
+from mrm.iter import batched
+from mrm.parse import all_nums
 
 def parse():
     with open('data/aoc_2024/13.txt', 'r', encoding='utf8') as f:
         lines = [l.strip('\n') for l in f.readlines()]
-    return groupby(lines, key=lambda l: l == '')
+    return batched(lines, 4)
 
-re_button = re.compile('Button [AB]: X[+]*([-0-9]+), Y[+]*([-0-9]+)')
-re_prize = re.compile('Prize: X=([0-9]+), Y=([0-9]+)')
-
-def parse_group(g):
-    mat = re_button.match(next(g))
-    a = (int(v) for v in mat.groups())
-    mat = re_button.match(next(g))
-    b = (int(v) for v in mat.groups())
-    mat = re_prize.match(next(g))
-    p = (int(v) for v in mat.groups())
+def parse_batch(g):
+    a = tuple(all_nums(g[0]))
+    b = tuple(all_nums(g[1]))
+    p = tuple(all_nums(g[2]))
 
     return a, b, p
 
@@ -38,12 +32,10 @@ def solve(ax, ay, bx, by, px, py):
     return m, n
 
 def part1(output=False):
-    groups = parse()
+    batches = parse()
     score = 0
-    for k, g in groups:
-        if k:
-            continue
-        a, b, p = parse_group(g)
+    for b in batches:
+        a, b, p = parse_batch(b)
         m, n = solve(*a, *b, *p)
         if m > 100 or n > 100:
             continue
@@ -51,13 +43,11 @@ def part1(output=False):
     return score
 
 def part2(output=False):
-    groups = parse()
+    batches = parse()
     offset = 10000000000000
     score = 0
-    for k, g in groups:
-        if k:
-            continue
-        a, b, p = parse_group(g)
+    for b in batches:
+        a, b, p = parse_batch(b)
         p = (v + offset for v in p)
         m, n = solve(*a, *b, *p)
         score += 3*m + n

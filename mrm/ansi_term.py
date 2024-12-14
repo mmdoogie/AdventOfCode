@@ -177,4 +177,6 @@ def as_pango_markup(text):
                 result += close
             break
 
+    result = result.replace('&', '&amp;')
+
     return result

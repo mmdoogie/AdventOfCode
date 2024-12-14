@@ -38,7 +38,7 @@ def minmax_y(pos):
 
     return min_y, max_y
 
-def print_image(pos, use_char = False, default_char = ' ', highlighter = lambda x, y, c: c, margin = 1):
+def print_image(pos, use_char = False, default_char = ' ', highlighter = lambda x, y, c: c, margin = 1, border = False, ruler = False):
     """Output a text-based representation of the points or cpoints specified in pos.
     Without use_char, present points will be represented with '**' and missing points with '  '.
     With use_char, present points will output their dict value and missing points use default_char.
@@ -60,7 +60,17 @@ def print_image(pos, use_char = False, default_char = ' ', highlighter = lambda 
     if from_xy is None:
         raise TypeError('Unknown point set type')
 
+    if ruler:
+        r_strs = [str(x) for x in range(min_x - margin, max_x + 1 + margin)]
+        rows = max(len(r) for r in r_strs)
+        r_strs = [f'{r: >{rows}}' for r in r_strs]
+        for n in range(rows):
+            print(' ' * border + ''.join(r[n] for r in r_strs))
+    if border:
+        print('┌' + '─' * (max_x - min_x + 1 + 2 * margin ) + '┐')
     for y in range(int(min_y - margin), int(max_y + 1 + margin)):
+        if border:
+            print('│', end='')
         for x in range(int(min_x - margin), int(max_x + 1 + margin)):
             if from_xy(x, y) in pos:
                 if use_char:
@@ -73,7 +83,13 @@ def print_image(pos, use_char = False, default_char = ' ', highlighter = lambda 
                 else:
                     disp = '  '
             print(highlighter(x, y, disp), end='')
+        if border:
+            print('│', end='')
+        if ruler:
+            print('', y, end='')
         print()
+    if border:
+        print('└' + '─' * (max_x - min_x + 1 + 2 * margin ) + '┘')
 
 def make_image(pos, output):
     """Draws a PIL Image which represents the points/cpoints given in pos.

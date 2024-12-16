@@ -6,6 +6,8 @@ DOWN = 1j
 LEFT = -1
 RIGHT = 1
 
+HEADINGS = [RIGHT, UP, LEFT, DOWN]
+
 def left_turn(heading):
     """Returns new heading after making a left turn from passed heading"""
     return heading * -1j

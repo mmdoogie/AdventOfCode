@@ -14,7 +14,7 @@ from mrm.crt import all_coprime, coprime, crt
 from mrm.dijkstra import Dictlike, dijkstra
 from mrm.graph import bfs, connected_component, prim_mst
 import mrm.image as img
-from mrm.iter import batched, sliding_window
+from mrm.iter import batched, flatten_lists, sliding_window
 import mrm.llist as llist
 from mrm.parse import all_nums, ensure_equal_length
 import mrm.point as pt

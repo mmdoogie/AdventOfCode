@@ -1,6 +1,6 @@
 """Module for iterator helper functions"""
 
-__all__ = ['batched', 'sliding_window']
+__all__ = ['batched', 'flatten_lists', 'sliding_window']
 
 from collections import deque
 from itertools import islice
@@ -24,3 +24,11 @@ def sliding_window(iterable, win_size = 2):
         d.popleft()
         d.append(x)
         yield tuple(d)
+
+def flatten_lists(lists):
+    """Iterates through a list, flattening any sublists and returning all contained elements"""
+    for l in lists:
+        if isinstance(l, list):
+            yield from flatten_lists(l)
+        else:
+            yield l

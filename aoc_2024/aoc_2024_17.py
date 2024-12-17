@@ -1,5 +1,3 @@
-from z3 import BitVec, Solver, ULT, sat
-
 from mrm.parse import all_nums
 
 def parse():
@@ -14,20 +12,7 @@ def combo_operand(operand, registers):
         return operand
     return registers[{4: 'A', 5: 'B', 6: 'C'}[operand]]
 
-def part1(output=False):
-    lines = parse()
-
-    registers = {'A': 0, 'B': 0, 'C': 0}
-    for l in lines:
-        if 'Register' in l:
-            registers[l[9]] = next(all_nums(l))
-        if 'Program' in l:
-            program = list(all_nums(l))
-
-    if output:
-        print('Registers:', registers)
-        print('Program:', program)
-
+def run_program(registers, program):
     pc = 0
     res = []
 
@@ -49,11 +34,29 @@ def part1(output=False):
         if instr == 4:
             registers['B'] = registers['B'] ^ registers['C']
         if instr == 5:
-            res += [str(combo_operand(operand, registers) % 8)]
+            res += [combo_operand(operand, registers) % 8]
 
         pc += 2
 
-    return ','.join(res)
+    return res
+
+def part1(output=False):
+    lines = parse()
+
+    registers = {'A': 0, 'B': 0, 'C': 0}
+    for l in lines:
+        if 'Register' in l:
+            registers[l[9]] = next(all_nums(l))
+        if 'Program' in l:
+            program = list(all_nums(l))
+
+    if output:
+        print('Registers:', registers)
+        print('Program:', program)
+
+    res = run_program(registers, program)
+
+    return ','.join(str(r) for r in res)
 
 def part2(output=False):
     lines = parse()
@@ -62,32 +65,17 @@ def part2(output=False):
         if 'Program' in l:
             program = list(all_nums(l))
 
-    solver = Solver()
-    a_vars = []
-    for i, p in enumerate(program):
-        a_curr = BitVec(f'A{i}', 64)
-        solver.add(((a_curr % 8) ^ program[3] ^ program[9] ^ (a_curr / (1 << ((a_curr % 8) ^ program[3])))) % 8 == p)
-        if a_vars:
-            solver.add(a_curr == a_vars[-1] / (2 ** program[7]))
-        a_vars += [a_curr]
-    solver.add(ULT(a_curr, 2 ** program[7]))
+    curr_a = 0
+    for next_out in reversed(program):
+        for try_add in range(8):
+            res = run_program({'A': curr_a * 8 + try_add, 'B': 0, 'C': 0}, program)
+            if res[0] == next_out:
+                if output:
+                    print(f'{curr_a} * 8 + {try_add} -> {res}')
+                curr_a = curr_a * 8 + try_add
+                break
 
-    if output:
-        print('Solving', solver.assertions())
-        print()
-
-    while solver.check() == sat:
-        model = solver.model()
-        if output:
-            print('Found', model)
-            print('Adding A0 <', model[a_vars[0]])
-            print()
-        solver.add(ULT(a_vars[0], model[a_vars[0]]))
-
-    if output:
-        print('No further solutions')
-
-    return model[a_vars[0]]
+    return curr_a
 
 if __name__ == '__main__':
     print('Part 1:', part1(True))

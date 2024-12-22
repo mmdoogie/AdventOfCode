@@ -1,6 +1,6 @@
 """Module for small helper functions without a home"""
 
-__all__ = ['big_pi', 'Funkydict', 'md5sum', 'product']
+__all__ = ['big_pi', 'Funkydict', 'md5sum', 'product', 'repeatedly_apply']
 
 from collections import UserDict
 from functools import reduce
@@ -37,3 +37,10 @@ class Funkydict(UserDict):
         else:
             curr = self.default_factory()
         self.data[key] = self.set_fun(curr, val)
+
+def repeatedly_apply(fn, iv, times, *args, **kwargs):
+    """Repeatedly apply a function to it's previous value"""
+    val = iv
+    for _ in range(times):
+        val = fn(val, *args, **kwargs)
+    return val

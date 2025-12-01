@@ -91,16 +91,16 @@ def main():
     if args.d is None:
         args.d = datetime.utcnow().day
 
-    if args.y >= 15 and args.y <= 24:
+    if args.y >= 15 and args.y <= 25:
         args.y += 2000
 
-    included_years = list(range(2015, 2025))
+    included_years = list(range(2015, 2026))
     if args.y not in included_years:
         print('Year must be in', included_years)
         sys.exit(1)
 
-    if args.d < 0 or args.d > 25:
-        print('Day must be between 1 and 25 inclusive.  Use 0 for all')
+    if args.d < 0 or (args.y >= 2025 and args.d > 12) or args.d > 25:
+        print('Day must be between 1 and 25 inclusive (1 and 12 for years 2025 and beyond).  Use 0 for all')
         sys.exit(1)
 
     if args.s and (args.d == 0 or args.p is None):
@@ -111,10 +111,14 @@ def main():
 
     if args.d == 0:
         ansi.clear_screen()
-        results = [run_daypart(args.y, day, part, False, False) for day in range(1, 26) for part in part_nums]
+        if args.y >= 2025:
+            run_range = range(1, 13)
+        else:
+            run_range = range(1, 26)
+        results = [run_daypart(args.y, day, part, False, False) for day in run_range for part in part_nums]
         passing = sum(r[0] for r in results)
         total_time = sum(r[1] for r in results)
-        total_cnt = 25 * len(part_nums)
+        total_cnt = len(run_range) * len(part_nums)
         print(f'[{total_time:>7.3f}] Passing:', passing, 'of', total_cnt)
     else:
         for part_num in part_nums:

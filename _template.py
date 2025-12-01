@@ -16,7 +16,7 @@ from mrm.graph import bfs_dist, bfs_min_paths, connected_component, prim_mst
 import mrm.image as img
 from mrm.iter import batched, flatten_lists, sliding_window
 import mrm.llist as llist
-from mrm.parse import all_nums, ensure_equal_length
+from mrm.parse import all_nums, ensure_equal_length, int_if_possible
 import mrm.point as pt
 from mrm.search import fn_binary_search
 from mrm.text import let2num, num2let

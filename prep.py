@@ -71,15 +71,15 @@ def main():
     if not args.d:
         args.d = now.day
 
-    if args.y >= 15 and args.y <= 24:
+    if args.y >= 15 and args.y <= 25:
         args.y += 2000
 
-    if args.y != 2024:
-        print('Year must be 2024')
+    if args.y != 2025:
+        print('Year must be 2025')
         sys.exit(1)
 
-    if args.d < 1 or args.d > 25:
-        print('Day must be between 1 and 25 inclusive.')
+    if args.d < 1 or args.d > 12:
+        print('Day must be between 1 and 12 inclusive.')
         sys.exit(1)
 
     if args.f and args.p is None:

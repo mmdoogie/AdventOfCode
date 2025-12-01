@@ -1,5 +1,7 @@
 """Module for dealing with 2D points and directions using complex numbers"""
 
+from itertools import product
+
 ZERO = 0j
 UP = -1j
 DOWN = 1j
@@ -28,6 +30,14 @@ def as_xy(pt, t=float):
     """Converts complex point to cartesian components. t can be used to specify int/float."""
     return t(pt.real), t(pt.imag)
 
+def x(pt, t=int):
+    """Returns x cartesian component of complex point. t can be used to specify int/float."""
+    return t(pt.real)
+
+def y(pt, t=int):
+    """Returns y cartesian component of complex point. t can be used to specify int/float."""
+    return t(pt.imag)
+
 def from_xy(x, y):
     """Makes a complex point from cartesian components"""
     return x + 1j * y
@@ -44,12 +54,22 @@ def adj_ortho(pt, constrain_pos = None):
 def adj_diag(pt, constrain_pos = None):
     """Returns list of orthogonally and diagonally adjacent positions (up-left, left, down-left,
     up, down, up-right, right, down-right) subject to being present in constrain_pos (use None
-    to always return all four).
+    to always return all eight).
     """
     adj = [pt + y + x for y in [-1j, 0, 1j] for x in [-1, 0, 1] if any([x, y])]
     if constrain_pos is None:
         return adj
     return [a for a in adj if a in constrain_pos]
+
+def adj_knight(pt, constrain_pos = None):
+    """Returns list of positions which are one chess knight move away in all directions
+    subject to being present in constrain_pos (use None to always return the full list).
+    """
+    adj_1 = [pt + xi + 1j * yi for xi, yi in product([-2, 2], [-1, 1])]
+    adj_2 = [pt + xi + 1j * yi for yi, xi in product([-2, 2], [-1, 1])]
+    if constrain_pos is None:
+        return adj_1 + adj_2
+    return [a for a in adj_1 + adj_2 if a in constrain_pos]
 
 def m_dist(pt1, pt2 = ZERO):
     """Return Manhattan / grid distance between two points, or origin if pt2 not specified"""

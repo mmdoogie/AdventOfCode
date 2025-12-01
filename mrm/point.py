@@ -29,6 +29,19 @@ def adj_diag(pt, constrain_pos = None):
         return adj
     return [a for a in adj if a in constrain_pos]
 
+def adj_knight(pt, constrain_pos = None):
+    """Returns list of positions which are one chess knight move away in all directions
+    subject to being present in constrain_pos (use None to always return the full list).
+    """
+    dims = len(pt)
+    if dims != 2:
+        raise ValueError("Currently only defined for 2D points")
+    adj_1 = [(pt[0] + xi, pt[1] + yi) for xi, yi in product([-2, 2], [-1, 1])]
+    adj_2 = [(pt[0] + xi, pt[1] + yi) for yi, xi in product([-2, 2], [-1, 1])]
+    if constrain_pos is None:
+        return adj_1 + adj_2
+    return [a for a in adj_1 + adj_2 if a in constrain_pos]
+
 def m_dist(pt1, pt2):
     """Return Manhattan / grid distance between two points"""
     if len(pt1) != len(pt2):
@@ -57,19 +70,20 @@ def point_neg(pt):
     """Return new point which is the negation of all dimension components"""
     return tuple(-p for p in pt)
 
-def grid_as_dict(grid, valid = lambda x: True, with_inv = False):
+def grid_as_dict(grid, valid = lambda x: True, with_inv = False, conv = str):
     """Convert a grid of text into a dictionary of 2D points mapping to corresponding characters.
     Points are only included subject to the valid function (defaults to accepting all points).
     With with_inv = True, also return the inverse that maps unique characters to location lists.
+    Conv function if provided is called on each character to transform it before storage.
     """
     res = {}
     for y, g in enumerate(grid):
         for x, c in enumerate(g):
             if valid(c):
-                res[(x, y)] = c
+                res[(x, y)] = conv(c)
     if not with_inv:
         return res
-    inv = {c: {k for k, v in res.items() if v == c} for c in set(res.values())}
+    inv = {conv(c): {k for k, v in res.items() if v == c} for c in set(res.values())}
     return res, inv
 
 def polygon_area(pts):

@@ -3,6 +3,7 @@
 __all__ = ['bfs_dist', 'bfs_min_paths', 'connected_component', 'prim_mst']
 
 from collections import defaultdict, deque
+from .prioset import Prioset
 
 def connected_component(ngh, start_point):
     """Connected Component
@@ -19,25 +20,25 @@ def connected_component(ngh, start_point):
             break
     return component
 
-def bfs_dist(ngh, start_point):
+def bfs_dist(ngh, start_point, max_dist=0):
     """Breadth-First Search
-    Perform a breadth-first search, returning the dict mapping node id to iteration depth
+    Perform a breadth-first search, returning the Prioset of nodes reached at each depth
 
     ngh -- dict mapping hashable node ids to list of neighbor node ids
     start_point -- node id of start point
+    max_dist -- optional: maximum depth to explore, 0 (default) is unlimited
     """
-    weights = {start_point: 0}
-    explore_from = deque([start_point])
-    explored = set()
+    weights = Prioset()
+    weights.add(start_point, 0)
+    explore_from = Prioset()
+    explore_from.add(start_point, 0)
     while explore_from:
-        src = explore_from.popleft()
-        if src in explored:
-            continue
-        explored.add(src)
-        dst = [n for n in ngh[src] if n not in explored and n not in explore_from]
-        for d in dst:
-            weights[d] = weights[src] + 1
-            explore_from.append(d)
+        src, src_wt = explore_from.pop()
+        dst_wt = src_wt + 1
+        for d in ngh[src]:
+            weights.add(d, dst_wt)
+            if not max_dist or dst_wt < max_dist:
+                explore_from.add(d, dst_wt)
     return weights
 
 def bfs_min_paths(ngh, start_point):
@@ -49,18 +50,18 @@ def bfs_min_paths(ngh, start_point):
     """
     paths = defaultdict(list)
     paths[start_point] = [[start_point]]
-    explore_from = deque([start_point])
+    explore_from = Prioset()
+    explore_from.add(start_point, 0)
     explored = set()
     while explore_from:
-        src = explore_from.popleft()
+        src, src_wt = explore_from.pop()
         if src in explored:
             continue
         explored.add(src)
-        dst = [n for n in ngh[src] if n not in explored]
-        for d in dst:
+        dst_wt = src_wt + 1
+        for d in ngh[src]:
             paths[d] += [p + [d] for p in paths[src]]
-            if d not in explore_from:
-                explore_from.append(d)
+            explore_from.add(d, dst_wt)
     return paths
 
 def prim_mst(ngh, wts, start_point=None):

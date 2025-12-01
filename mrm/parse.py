@@ -1,6 +1,6 @@
 """Module for parsing helper functions"""
 
-__all__ = ['all_nums', 'ensure_equal_length']
+__all__ = ['all_nums', 'ensure_equal_length', 'int_if_possible']
 
 import re
 
@@ -21,3 +21,16 @@ def all_nums(line, int_or_float=int):
     if int_or_float is not int:
         regex = _FLOATS_RE
     return (int_or_float(match[0]) for match in regex.finditer(line))
+
+def int_if_possible(s):
+    """Returns int conversion of an object if possible,
+    otherwise the original object is returned
+    """
+    v = s
+
+    try:
+        v = int(s)
+    except ValueError:
+        pass
+
+    return v

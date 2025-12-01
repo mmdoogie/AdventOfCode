@@ -72,6 +72,14 @@ class Bitvector:
         self[bit] = True
         return self
 
+    def copy_with(self, bit: int) -> 'Bitvector':
+        """Chainable item to set a specific bit
+        (returns a new Bitvector being operated on)
+        """
+        bv = Bitvector(max_bit=self.max_bit, iv=self.as_int())
+        bv[bit] = True
+        return bv
+
     def __repr__(self):
         return 'bitvect<' + bin(self.as_int()) + '>'
 

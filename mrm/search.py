@@ -11,7 +11,7 @@ def fn_binary_search(result_fn, start_val, success_fn, max_val = None, max_find_
     left = start_val
     if max_val is None:
         right = 0
-        val = max_find_multiple
+        val = start_val
     else:
         right = max_val
         val = (left + right) // 2

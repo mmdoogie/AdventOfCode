@@ -1,6 +1,6 @@
 """Module for small helper functions without a home"""
 
-__all__ = ['big_pi', 'Funkydict', 'md5sum', 'product', 'repeatedly_apply']
+__all__ = ['big_pi', 'Funkydict', 'md5sum', 'product', 'repeatedly_apply', 'merge_ranges']
 
 from collections import UserDict
 from functools import reduce
@@ -28,6 +28,8 @@ class Funkydict(UserDict):
     def __init__(self, initialdata = None, set_fun = lambda curr, new: new, default_factory = int):
         if initialdata:
             super().__init__(initialdata)
+        else:
+            super().__init__()
         self.set_fun = set_fun
         self.default_factory = default_factory
 
@@ -44,3 +46,34 @@ def repeatedly_apply(fn, iv, times, *args, **kwargs):
     for _ in range(times):
         val = fn(val, *args, **kwargs)
     return val
+
+def merge_ranges(ranges):
+    """Merge a set or list of ranges so that there are no entries covered by more than one range"""
+
+    ranges = sorted(ranges, key=lambda x: x.start)
+    while True:
+        del_ranges = set()
+        add_ranges = set()
+        for r1 in ranges:
+            for r2 in ranges:
+                if r1 == r2:
+                    continue
+                if r2.start < r1.start:
+                    continue
+                if r2.start > r1.stop:
+                    break
+                if r2.stop <= r1.stop:
+                    del_ranges.add(r2)
+                    break
+                if r2.stop > r1.stop:
+                    del_ranges.add(r1)
+                    del_ranges.add(r2)
+                    add_ranges.add(range(r1.start, r2.stop))
+                    break
+            if add_ranges or del_ranges:
+                ranges = sorted(set(ranges).difference(del_ranges).union(add_ranges), key=lambda x: x.start)
+                break
+        if not add_ranges and not del_ranges:
+            break
+
+    return ranges

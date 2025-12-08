@@ -74,15 +74,37 @@ class Dictlike():
     """Dictlike object acts like a read-only dictionary but where
     'd[k]' and 'k in d' operations are provided by functions that can
     compute values on the fly.
+
+    get_fn -- function which is passed a key to return the value for.
+    contains_fn -- if provided, function which is passed a key to determine if
+                   the key is present. If not provided, but keys is, keys is
+                   checked. Otherwise all keys are considered present.
+    keys -- list of keys to use when contains_fn is not provided, or to enable
+            iteration over the object.
     """
 
-    def __init__(self, get_fn, contains_fn = lambda x: True):
-        """Creates a Dictlike object with the provided get and contains functions"""
+    def __init__(self, get_fn, contains_fn = None, keys = None):
         self.get_fn = get_fn
-        self.contains_fn = contains_fn
+        if contains_fn:
+            self.contains_fn = contains_fn
+        elif keys:
+            self.contains_fn = lambda x: x in keys
+        else:
+            self.contains_fn = lambda x: True
+        self._keys = keys
+
+    def get(self, key, default=None):
+        if key in self:
+            return self[key]
+        return default
 
     def __getitem__(self, key):
         return self.get_fn(key)
 
     def __contains__(self, key):
         return self.contains_fn(key)
+
+    def __iter__(self):
+        if not self._keys:
+            raise KeyError('Dictlike keys not provided')
+        return iter(self._keys)

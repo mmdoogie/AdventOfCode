@@ -4,6 +4,7 @@ My Advent of Code solutions, all it one place, with a runner framework, for fun 
 
 ### Completion Status
 
+    [2025] 24* (AoC++)
     [2024] 50* (AoC++)
     [2023] 50* (AoC++)
     [2022] 50*
@@ -15,10 +16,11 @@ My Advent of Code solutions, all it one place, with a runner framework, for fun 
     [2016] 50*
     [2015] 50*
 
-    Total stars: 500*
+    Total stars: 524*
 
 ### Code Runtimes & Completion Reports
 
+[[2025]](aoc_2025/README.md)
 [[2024]](aoc_2024/README.md)
 
 ### Older code history
